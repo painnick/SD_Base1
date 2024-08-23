@@ -29,7 +29,7 @@ void BaseController::turnTable() {
 void BaseController::turnArm() {
     auto degreesPerSecond = (int) random(60, 90);
     ESP_LOGD(SERVOS_TAG, "(Table) Degrees per second is %d", degreesPerSecond);
-    servoArm.easeTo(45, degreesPerSecond);
+    servoArm.easeTo(60, degreesPerSecond);
     delay(2 * 1000);
     servoArm.easeTo(0, degreesPerSecond);
 }

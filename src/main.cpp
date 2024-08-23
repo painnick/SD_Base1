@@ -13,8 +13,8 @@
 #define PIN_MOTOR2 26
 
 // Base PIN & Channel
-#define PIN_SERVO1_TABLE 14
-#define PIN_SERVO1_ARM 17
+#define PIN_SERVO1_TABLE 19
+#define PIN_SERVO1_ARM 23
 #define PIN_EYE 4
 #define PIN_GUN 18
 
@@ -54,7 +54,15 @@ void setup() {
     delay(1000 * 3);
 }
 
+
+unsigned long lastChecked = 0;
+
 void loop() {
+    auto now = millis();
+    if (now - lastChecked > 1000 * 10) {
+        Base.turnArm();
+        lastChecked = now;
+    }
     auto isUp = touchRead(PIN_TOUCH_UP) < 32;
     auto isDown = touchRead(PIN_TOUCH_DOWN) < 32;
     Tower.loop(isUp, isDown);
