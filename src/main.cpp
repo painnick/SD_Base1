@@ -20,6 +20,8 @@
 
 #define CH_MOTOR1 2
 #define CH_MOTOR2 3
+#define CH_EYE 4
+#define CH_GUN 5
 
 // Servo
 #define DISABLE_COMPLEX_FUNCTIONS
@@ -32,7 +34,7 @@
 #include "controllers/BaseController.h"
 #include "controllers/TowerController.h"
 
-BaseController Base(PIN_SERVO1_TABLE, PIN_SERVO1_ARM, PIN_EYE, PIN_GUN);
+BaseController Base(PIN_SERVO1_TABLE, PIN_SERVO1_ARM, PIN_EYE, CH_EYE, PIN_GUN, CH_GUN);
 TowerController Tower(PIN_MOTOR1, PIN_MOTOR2, CH_MOTOR1, CH_MOTOR2);
 
 void IRAM_ATTR WhenMin() {
@@ -59,12 +61,17 @@ unsigned long lastChecked = 0;
 
 void loop() {
     auto now = millis();
-    if (now - lastChecked > 1000 * 10) {
+    if (now - lastChecked > 1000 * 5) {
         Base.turnArm();
-        lastChecked = now;
+        delay(1000);
+        Base.fireHeadVulkan();
+        lastChecked = millis();
     }
     auto isUp = touchRead(PIN_TOUCH_UP) < 32;
     auto isDown = touchRead(PIN_TOUCH_DOWN) < 32;
     Tower.loop(isUp, isDown);
+    if (isUp || isDown) {
+        lastChecked = now;
+    }
     delay(100);
 }
