@@ -34,36 +34,27 @@ void BaseController::turnTable() {
     delay(500);
 }
 
-void BaseController::turnArm() {
-    auto degreesPerSecond = (int) random(60, 90);
-    ESP_LOGD(SERVOS_TAG, "(Table) Degrees per second is %d", degreesPerSecond);
+void BaseController::turnArmUp(uint_fast16_t degreesPerSecond) {
     servoArm.easeTo(60, degreesPerSecond);
-    delay(500);
-    fireGun();
-    delay(500);
+}
+
+void BaseController::turnArmDown(uint_fast16_t degreesPerSecond) {
     servoArm.easeTo(0, degreesPerSecond);
 }
 
-void BaseController::fireGun() const {
+void BaseController::fireGun(uint32_t ms) const {
     ESP_LOGD(SERVOS_TAG, "(Gun) Fire!!!");
-    for (auto i = 0; i < 3; i++) {
-        ledcWrite(_GunCh, 127);
-        delay(500);
-        ledcWrite(_GunCh, 0);
-        delay(200);
-    }
+    ledcWrite(_GunCh, 127);
+    delay(ms);
+    ledcWrite(_GunCh, 0);
 }
 
-void BaseController::fireHeadVulkan() const {
-    ESP_LOGD(SERVOS_TAG, "(Head Vulkan) Fire!!!");
-    for (auto i = 0; i < 7; i++) {
-        ledcWrite(_EyeCh, 127);
-        delay(100);
-        ledcWrite(_EyeCh, 0);
-        delay(100);
-    }
+void BaseController::fireHeadVulcan(uint32_t ms) const {
+    ESP_LOGD(SERVOS_TAG, "(Head Vulcan) Fire!!!");
+    ledcWrite(_EyeCh, 127);
+    delay(ms);
+    ledcWrite(_EyeCh, 0);
 }
-
 
 void BaseController::loop() {
     // Do something

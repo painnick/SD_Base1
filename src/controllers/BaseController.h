@@ -14,10 +14,11 @@ public:
 
     void turnTable();
 
-    void turnArm();
+    void turnArmUp(uint_fast16_t degreesPerSecond);
+    void turnArmDown(uint_fast16_t degreesPerSecond);
 
-    void fireGun() const;
-    void fireHeadVulkan() const; // First
+    void fireGun(uint32_t ms) const;
+    void fireHeadVulcan(uint32_t ms) const; // First Gundam
 
     void loop();
 
