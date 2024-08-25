@@ -42,10 +42,15 @@ void BaseController::turnArmDown(uint_fast16_t degreesPerSecond) {
     servoArm.easeTo(0, degreesPerSecond);
 }
 
-void BaseController::fireGun(uint32_t ms) const {
+void BaseController::fireGun(uint32_t ms) {
     ESP_LOGD(SERVOS_TAG, "(Gun) Fire!!!");
     ledcWrite(_GunCh, 127);
-    delay(ms);
+    servoArm.easeTo(50, 90);
+    delay(200);
+    servoArm.easeTo(60, 90);
+    if(ms -200 > 0) {
+        delay(ms - 200);
+    }
     ledcWrite(_GunCh, 0);
 }
 

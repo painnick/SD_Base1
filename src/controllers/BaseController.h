@@ -17,7 +17,7 @@ public:
     void turnArmUp(uint_fast16_t degreesPerSecond);
     void turnArmDown(uint_fast16_t degreesPerSecond);
 
-    void fireGun(uint32_t ms) const;
+    void fireGun(uint32_t ms);
     void fireHeadVulcan(uint32_t ms) const; // First Gundam
 
     void loop();
