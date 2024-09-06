@@ -35,6 +35,9 @@ void setup() {
     playBackground();
 
     Tower.setup();
+
+    gpio_set_direction((gpio_num_t)PIN_HALL_SENSOR_MAX, GPIO_MODE_INPUT);
+    gpio_set_direction((gpio_num_t)PIN_HALL_SENSOR_MIN, GPIO_MODE_INPUT);
     attachInterrupt(PIN_HALL_SENSOR_MAX, WhenMax, FALLING);
     attachInterrupt(PIN_HALL_SENSOR_MIN, WhenMin, FALLING);
 
@@ -42,40 +45,34 @@ void setup() {
     delay(1000 * 3);
 }
 
-
-unsigned long lastChecked = 0;
-
 void loop() {
-    auto now = millis();
-    if (now - lastChecked > 1000 * 5) {
-        auto degreesPerSecond = (int) random(60, 90);
-        ESP_LOGD(MAIN_TAG, "(Table) Degrees per second is %d", degreesPerSecond);
+    auto degreesPerSecond = (int) random(60, 90);
+    ESP_LOGD(MAIN_TAG, "(Table) Degrees per second is %d", degreesPerSecond);
 
-        Base.turnArmUp(degreesPerSecond);
-        delay(500);
-        for (int i = 0; i < 2; i++) {
-            playBeamRifle();
-            Base.fireGun(500);
-            delay(800);
-            stopAdvert();
-            delay(500);
-        }
-        Base.turnArmDown(degreesPerSecond);
-
-        delay(1000);
-        playHeadVulcan();
-        for (int i = 0; i < 8; i++) {
-            Base.fireHeadVulcan(300);
-            delay(50);
-        }
+    Base.turnArmUp(degreesPerSecond);
+    delay(500);
+    for (int i = 0; i < 2; i++) {
+        playBeamRifle();
+        Base.fireGun(500);
+        delay(800);
         stopAdvert();
-        lastChecked = millis();
+        delay(500);
     }
-    auto isUp = touchRead(PIN_TOUCH_UP) < 32;
-    auto isDown = touchRead(PIN_TOUCH_DOWN) < 32;
-    Tower.loop(isUp, isDown);
-    if (isUp || isDown) {
-        lastChecked = now;
+    Base.turnArmDown(degreesPerSecond);
+
+    delay(1000);
+    playHeadVulcan();
+    for (int i = 0; i < 8; i++) {
+        Base.fireHeadVulcan(300);
+        delay(50);
     }
-    delay(100);
+    stopAdvert();
+
+    Tower.motorMoveDown();
+    delay(1000 * 3);
+    Tower.motorMoveUp();
+    delay(1000 * 3);
+    Tower.motorMoveStop();
+
+    delay(1000 * 10);
 }
