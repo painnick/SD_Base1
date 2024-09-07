@@ -12,19 +12,9 @@
 // Controllers
 #include "common.h"
 #include "controllers/BaseController.h"
-#include "controllers/TowerController.h"
 #include "controllers/Mp3Controller.h"
 
 BaseController Base(PIN_SERVO1_TABLE, PIN_SERVO1_ARM, PIN_EYE, CH_EYE, PIN_GUN, CH_GUN);
-TowerController Tower(PIN_MOTOR1, PIN_MOTOR2, CH_MOTOR1, CH_MOTOR2);
-
-void IRAM_ATTR WhenMin() {
-    Tower.onMin();
-}
-
-void IRAM_ATTR WhenMax() {
-    Tower.onMax();
-}
 
 void setup() {
     delay(1000 * 3);
@@ -33,13 +23,6 @@ void setup() {
     setDefaultVolume();
     delay(300);
     playBackground();
-
-    Tower.setup();
-
-    gpio_set_direction((gpio_num_t)PIN_HALL_SENSOR_MAX, GPIO_MODE_INPUT);
-    gpio_set_direction((gpio_num_t)PIN_HALL_SENSOR_MIN, GPIO_MODE_INPUT);
-    attachInterrupt(PIN_HALL_SENSOR_MAX, WhenMax, FALLING);
-    attachInterrupt(PIN_HALL_SENSOR_MIN, WhenMin, FALLING);
 
     Base.setup();
     delay(1000 * 3);
@@ -67,12 +50,6 @@ void loop() {
         delay(50);
     }
     stopAdvert();
-
-    Tower.motorMoveDown();
-    delay(1000 * 3);
-    Tower.motorMoveUp();
-    delay(1000 * 3);
-    Tower.motorMoveStop();
 
     delay(1000 * 10);
 }

@@ -11,9 +11,6 @@
 #define PIN_HALL_SENSOR_MAX 3 // OK
 #define PIN_HALL_SENSOR_MIN 4 // OK
 
-#define PIN_MOTOR1 20
-#define PIN_MOTOR2 21
-
 // Base PIN & Channel
 #define PIN_SERVO1_TABLE 1 // OK
 #define PIN_SERVO1_ARM 10 // OK
@@ -24,7 +21,5 @@
 #define PIN_SDA 8
 #define PIN_SCL 9
 
-#define CH_MOTOR1 2
-#define CH_MOTOR2 3
 #define CH_EYE 4
 #define CH_GUN 5
