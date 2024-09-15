@@ -28,7 +28,7 @@ void setup() {
     delay(1000 * 3);
 }
 
-void fire() {
+void fireGunAndHeadVulcan() {
     auto degreesPerSecond = (int) random(60, 90);
     ESP_LOGD(MAIN_TAG, "(Table) Degrees per second is %d", degreesPerSecond);
 
@@ -56,17 +56,17 @@ void loop() {
     Base.turnTable(0, 60);
     delay(1000 * 5);
 
-    fire();
+    fireGunAndHeadVulcan();
     delay(1000 * 3);
 
     Base.turnTable((int) random(45, 60), 60);
-    fire();
+    fireGunAndHeadVulcan();
     delay(1000 * 2);
 
     Base.turnTable(0, 60);
     delay(1000 * 5);
 
     Base.turnTable((int) random(45, 60) * -1, 60);
-    fire();
+    fireGunAndHeadVulcan();
     delay(1000 * 2);
 }
