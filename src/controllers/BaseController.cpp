@@ -25,12 +25,9 @@ void BaseController::setup() {
     ledcAttachPin(_GunPin, _GunCh);
 }
 
-void BaseController::turnTable() {
-    auto degreesPerSecond = (int) random(30, 60);
-    ESP_LOGD(SERVOS_TAG, "(TurnTable) Degrees per second is %d", degreesPerSecond);
-    servoTable.easeTo(90 + (int) random(15, 45), degreesPerSecond);
-    delay(500);
-    servoTable.easeTo(90 - (int) random(15, 45), degreesPerSecond);
+void BaseController::turnTable(int degrees, int degreesPerSecond) {
+    ESP_LOGD(SERVOS_TAG, "(TurnTable) Degrees per second is %d", degrees);
+    servoTable.easeTo(90 + degrees, degreesPerSecond);
     delay(500);
 }
 
