@@ -134,8 +134,13 @@ inline void setupSound() {
 
 void playBackground() {
     ESP_LOGD(MP3_TAG, "Play BGM");
+    dfmp3.setVolume(0);
+    dfmp3.loop();
     BACKGROUND_TRACK = MAIN_THEME_TRACK;
     dfmp3.playMp3FolderTrack(MAIN_THEME_TRACK);
+    dfmp3.loop();
+    auto trackNo = dfmp3.getCurrentTrack();
+    dfmp3.loopGlobalTrack(trackNo);
     dfmp3.loop();
 }
 

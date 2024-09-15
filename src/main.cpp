@@ -20,9 +20,9 @@ void setup() {
     delay(1000 * 3);
     ESP_LOGI(MAIN_TAG, "Setup!");
     setupSound();
-    setDefaultVolume();
     delay(300);
     playBackground();
+    setDefaultVolume();
 
     Base.setup();
     delay(1000 * 3);
