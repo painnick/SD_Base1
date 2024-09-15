@@ -13,6 +13,7 @@ public:
     void setup();
 
     void turnTable(int degrees, int degreesPerSecond);
+    void startTurnTable(int degrees, int degreesPerSecond);
 
     void turnArmUp(uint_fast16_t degreesPerSecond);
     void turnArmDown(uint_fast16_t degreesPerSecond);

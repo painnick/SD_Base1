@@ -31,6 +31,11 @@ void BaseController::turnTable(int degrees, int degreesPerSecond) {
     delay(500);
 }
 
+void BaseController::startTurnTable(int degrees, int degreesPerSecond) {
+    ESP_LOGD(SERVOS_TAG, "(TurnTable) Degrees per second is %d", degrees);
+    servoTable.startEaseTo(90 + degrees, degreesPerSecond, START_UPDATE_BY_INTERRUPT);
+}
+
 void BaseController::turnArmUp(uint_fast16_t degreesPerSecond) {
     servoArm.easeTo(60, degreesPerSecond);
 }
