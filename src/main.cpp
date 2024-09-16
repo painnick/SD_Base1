@@ -20,10 +20,6 @@ void setup() {
     ESP_LOGI(MAIN_TAG, "Setup!");
     setupSound();
     dfmp3.delayForResponse(1000 * 1);
-    setDefaultVolume();
-    dfmp3.delayForResponse(300);
-    playBackground();
-
     Base.setup();
 }
 
@@ -36,6 +32,7 @@ void fireGun() {
         playBeamRifle();
         Base.fireGun(500);
         dfmp3.delayForResponse(800);
+        stopAdvert();
         dfmp3.delayForResponse(500); // Wait
     }
     Base.turnArmDown(degreesPerSecond);
@@ -72,9 +69,11 @@ void fireHeadVulcanAround() {
 
 int lastDegrees = 0;
 bool lastDirectionIsLeft = true;
+
 void loop() {
     dfmp3.loop();
-    auto mode = (int) random(0, 12);
+
+    auto mode = (int) random(0, 15);
     switch (mode) {
         case 0:
         case 1:
@@ -100,6 +99,16 @@ void loop() {
             dfmp3.delayForResponse(1000);
             fireHeadVulcan();
             dfmp3.delayForResponse(1000);
+            break;
+        case 6:
+            Base.turnTable(0, 15);
+            playBackground1();
+            dfmp3.delayForResponse(1000 * 9);
+            break;
+        case 7:
+            Base.turnTable(0, 15);
+            playBackground2();
+            dfmp3.delayForResponse(1000 * 15);
             break;
         default:
             lastDegrees = (int) random(30, 60);

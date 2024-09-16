@@ -21,7 +21,8 @@ int BACKGROUND_TRACK = -1;
 #define BEAM_RIFLE_TRACK 1
 #define HEAD_VULCAN_TRACK 2
 
-void playBackground();
+void playBackground1();
+void playBackground2();
 
 class Mp3Notify;
 
@@ -102,7 +103,7 @@ public:
         ESP_LOGD(MP3_TAG, "Play finished for #%d", track);
 #endif
         if (track == BACKGROUND_TRACK) {
-            playBackground();
+//            playBackground();
         }
     }
 
@@ -131,10 +132,14 @@ inline void setupSound() {
     dfmp3.begin(9600, 1000);
 }
 
-void playBackground() {
-    ESP_LOGD(MP3_TAG, "Play BGM");
-    BACKGROUND_TRACK = MAIN_THEME_TRACK;
-    dfmp3.playMp3FolderTrack(MAIN_THEME_TRACK);
+void playBackground1() {
+    ESP_LOGD(MP3_TAG, "Play BGM1");
+    dfmp3.playMp3FolderTrack(1);
+}
+
+void playBackground2() {
+    ESP_LOGD(MP3_TAG, "Play BGM2");
+    dfmp3.playMp3FolderTrack(2);
 }
 
 void playBeamRifle() {
