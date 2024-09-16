@@ -31,7 +31,7 @@ License along with DFMiniMp3.  If not, see
 #include <esp_log.h>
 #include <stdint.h>
 
-#define DFMINIMP3_TAG "DFMINI"
+#define DFPLAYER_TAG "DFMINI"
 
 enum DfMp3_Error {
     // from device
@@ -198,7 +198,7 @@ public:
 
     void begin(unsigned long baud = 9600, unsigned long timeout = 10000) {
         if (_RX_Pin == -1 && _TX_Pin == -1) {
-            ESP_LOGE(DFMINIMP3_TAG, "RX_Pin %d, TX_Pin %d", _RX_Pin, _TX_Pin);
+            ESP_LOGE(DFPLAYER_TAG, "RX_Pin %d, TX_Pin %d", _RX_Pin, _TX_Pin);
             return;
         }
         _serial.begin(baud, SERIAL_8N1, _RX_Pin, _TX_Pin);
@@ -427,6 +427,14 @@ public:
         return _isOnline;
     }
 
+    void delayForResponse(int ms) {
+        int cnt = ms / 10;
+        for (int i = 0; i < cnt; i++) {
+            loop();
+            delay(10);
+        }
+    }
+
 private:
     static const uint16_t c_msSendSpace = 50;
 
@@ -456,31 +464,15 @@ private:
 
         _lastSendSpace = sendSpaceNeeded;
 
-#ifdef _DEBUG
-        Serial.print("==>");
-        Serial.print(" (STR)");
-        Serial.print(packet.startCode, HEX);
-        Serial.print(" (VER)");
-        Serial.print(packet.version, HEX);
-        Serial.print(" (LEN)");
-        Serial.print(packet.length, HEX);
-        Serial.print(" (CMD)");
-        Serial.print(packet.command, HEX);
-        Serial.print(" (ACK)");
-        Serial.print(packet.requestAck, HEX);
-        Serial.print(" (PAR1)");
-        Serial.print(packet.hiByteArgument, HEX);
-        Serial.print(" (PAR2)");
-        Serial.print(packet.lowByteArgument, HEX);
-#ifndef USE_MH2024K16SS
-        Serial.print(" (CHK1)");
-        Serial.print(packet.hiByteCheckSum, HEX);
-        Serial.print(" (CHK2)");
-        Serial.print(packet.lowByteCheckSum, HEX);
-#endif
-        // Serial.print(" (END)");
-        // Serial.print(packet.endCode, HEX);
-        Serial.println(".");
+#ifdef USE_MH2024K16SS
+        ESP_LOGV(DFPLAYER_TAG, "==> STR:%02X VER:%02X LEN:%02X CMD:%02X ACK:%02X PAR1:%02X PAR2:%02X END:%02X",
+                 packet.startCode, packet.version, packet.length, packet.command, packet.requestAck,
+                 packet.hiByteArgument, packet.lowByteArgument, packet.endCode
+        );
+#else
+        ESP_LOGV(DFPLAYER_TAG, "==> STR:%02X VER:%02X LEN:%02X CMD:%02X ACK:%02X PAR1:%02X PAR2:%02X CHK1:%02X CHK2:%02X",
+            packet.startCode, packet.version, packet.length, packet.command, packet.requestAck, packet.hiByteArgument, packet.lowByteArgument, packet.hiByteCheckSum, packet.lowByteCheckSum, packet.endCode
+        );
 #endif
 
         _serial.write(reinterpret_cast<uint8_t *>(&packet), sizeof(packet));
@@ -531,14 +523,9 @@ private:
             return false;
         }
 
-#ifdef _DEBUG
-        Serial.print(F("<== (CMD)"));
-        Serial.print(in.command, HEX);
-        Serial.print(F(" (PAR1)"));
-        Serial.print(in.hiByteArgument, HEX);
-        Serial.print(F(" (PAR2)"));
-        Serial.println(in.lowByteArgument, HEX);
-#endif
+        ESP_LOGV(DFPLAYER_TAG, "<== CMD:%02X PAR1:%02X PAR2:%02X",
+                 in.command, in.hiByteArgument, in.lowByteArgument
+        );
         *command = in.command;
         *argument = ((in.hiByteArgument << 8) | in.lowByteArgument);
 
@@ -550,10 +537,12 @@ private:
         uint16_t replyArg = 0;
 
         do {
-            if (readPacket(&replyCommand, &replyArg)) {
+            bool read = readPacket(&replyCommand, &replyArg);
+            if (read) {
                 if (command != 0 && command == replyCommand) {
                     return replyArg;
                 } else {
+                    ESP_LOGV(DFPLAYER_TAG, "replyCommand %02X", replyCommand);
                     switch (replyCommand) {
                         case 0x3c: // usb
                         case 0x4b: // usb on MH2024K-16SS
