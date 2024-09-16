@@ -124,7 +124,6 @@ DfMp3 dfmp3(Serial1, PIN_MP3_RX, PIN_MP3_TX);
 inline void setDefaultVolume() {
     ESP_LOGD(MP3_TAG, "Set Volume");
     dfmp3.setVolume(DEFAULT_VOLUME);
-    dfmp3.loop();
 }
 
 inline void setupSound() {
@@ -136,7 +135,6 @@ void playBackground() {
     ESP_LOGD(MP3_TAG, "Play BGM");
     BACKGROUND_TRACK = MAIN_THEME_TRACK;
     dfmp3.playMp3FolderTrack(MAIN_THEME_TRACK);
-    dfmp3.loop();
 }
 
 void playBeamRifle() {
